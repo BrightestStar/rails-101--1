@@ -20,6 +20,37 @@ class PostsController < ApplicationController
     end
   end
 
+  def edit
+    @group = Group.find(params[:group_id])
+    @post = Post.find(params[:id])
+    if current_user != @post.user
+      redirect_to root_path, alert: "You have no permission."
+    end
+  end
+
+  def update
+    @group = Group.find(params[:group_id])
+    @post = Post.find(params[:id])
+    if current_user != @post.user
+      redirect_to root_path, alert: "You have no permission."
+    end
+    if @post.update(post_params)
+      redirect_to account_posts_path
+    else
+      render :edit
+    end
+  end
+
+  def destroy
+    @group = Group.find(params[:group_id])
+    @post = Post.find(params[:id])
+    if current_user != @post.user
+      redirect_to root_path, alert: "You have no permission."
+    end
+    @post.destroy
+    redirect_to account_posts_path
+  end
+
   private
 
   def post_params
